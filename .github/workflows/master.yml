@@ -1,0 +1,81 @@
+name: Master
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+      - name: Execute tests
+        run: XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml.dist
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/php@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Upload tests results
+        uses: actions/upload-artifact@v2
+        with:
+          name: phpunit
+          path: |
+            coverage.xml
+            phpunit.xml
+  test-codacy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download tests results
+        uses: actions/download-artifact@v2
+        with:
+          name: phpunit
+      - name: Upload coverage results to Codacy
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_TOKEN }}
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage.xml
+  test-coveralls:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download tests results
+        uses: actions/download-artifact@v2
+        with:
+          name: phpunit
+      - name: Upload coverage results to Coveralls
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: bash <(curl -s https://codecov.io/bash)
+  test-sonarcloud:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download tests results
+        uses: actions/download-artifact@v2
+        with:
+          name: phpunit
+      - name: Fix coverage for SonarCloud
+        run: |
+          sed -i 's/\/home\/runner\/work\/test-package\/test-package\//\/github\/workspace\//g' coverage.xml
+          sed -i 's/\/home\/runner\/work\/test-package\/test-package\//\/github\/workspace\//g' phpunit.xml
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  tag:
+    needs: [test-codacy, test-coveralls, test-sonarcloud]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true

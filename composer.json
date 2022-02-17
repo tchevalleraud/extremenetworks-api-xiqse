@@ -1,0 +1,25 @@
+{
+    "name": "tchevalleraud/extremenetworks-api-xiqse",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Thibault CHEVALLERAUD",
+            "email": "tchevalleraud@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Tchevalleraud\\ExtremeNetworks\\XIQSE\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.0"
+    },
+    "require-dev": {
+        "phpunit/phpcov": "^8",
+        "phpunit/phpunit": "^9.5",
+        "php-coveralls/php-coveralls": "^2.5"
+    }
+}
