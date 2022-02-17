@@ -62,4 +62,8 @@
             return $this;
         }
 
+        public function getUrl(){
+            return $this->protocol."://".$this->server.":".$this->port;
+        }
+
     }
