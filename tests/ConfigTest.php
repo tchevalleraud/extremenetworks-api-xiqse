@@ -15,7 +15,7 @@
             $this->assertEquals("53e55769-50c8-483d-9665-40e497dc03fc", $config->getClientSecret());
             $this->assertEquals("https", $config->getProtocol());
             $this->assertEquals("8443", $config->getPort());
-            $this->assertEquals("https://192.168.1.1:8443", $config->getU);
+            $this->assertEquals("https://192.168.1.1:8443", $config->getUrl());
         }
 
     }
