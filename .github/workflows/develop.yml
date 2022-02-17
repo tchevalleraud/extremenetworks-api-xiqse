@@ -9,10 +9,10 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
-      - name: Execute tests
-        run: XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml.dist
+      - name: Install dependencies with docker
+        run: docker run -it --rm --name tchevalleraud_extremenetworks-api-xiqse -v "$PWD":/usr/src/myapp -w /usr/src/myapp php:8.1-cli composer install --prefer-dist --no-progress
+      - name: Execute tests with docker
+        run: docker run -it --rm --name tchevalleraud_extremenetworks-api-xiqse -v "$PWD":/usr/src/myapp -w /usr/src/myapp php:8.1-cli XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml.dist
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/php@master
         env:
