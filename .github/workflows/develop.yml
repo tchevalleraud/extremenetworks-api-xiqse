@@ -31,8 +31,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
-      - name: Execute tests
-        run: XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml.dist
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/php@master
         env:
