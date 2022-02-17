@@ -17,10 +17,6 @@ jobs:
         run: |
           docker run -d --rm --name tchevalleraud_extremenetworks-api-xiqse -v "$PWD":/usr/src/myapp -w /usr/src/myapp php:8.1-cli XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml.dist
           sleep 10
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/php@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Upload tests results
         uses: actions/upload-artifact@v2
         with:
@@ -28,6 +24,19 @@ jobs:
           path: |
             coverage.xml
             phpunit.xml
+  test-snyk:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+      - name: Execute tests
+        run: XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml.dist
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/php@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
   test-codacy:
     needs: build
     runs-on: ubuntu-latest
