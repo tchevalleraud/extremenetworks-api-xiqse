@@ -11,11 +11,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies with docker
         run: |
-          docker run --rm --name tchevalleraud_extremenetworks-api-xiqse -v "$PWD":/app composer composer install --prefer-dist --no-progress
+          docker run --rm --name tchevalleraud_extremenetworks-api-xiqse --user tchevalleraud:tchevalleraud -v "$PWD":/app composer composer install --prefer-dist --no-progress
           sleep 10
       - name: Execute tests with docker
         run: |
-          docker run -d --rm --name tchevalleraud_extremenetworks-api-xiqse -v "$PWD":/usr/src/myapp -w /usr/src/myapp php:8.1-cli XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml.dist
+          docker run --rm --name tchevalleraud_extremenetworks-api-xiqse --user tchevalleraud:tchevalleraud -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e XDEBUG_MODE=coverage mileschou/xdebug:8.1 vendor/bin/phpunit --configuration phpunit.xml.dist
           sleep 10
       - name: Upload tests results
         uses: actions/upload-artifact@v2
