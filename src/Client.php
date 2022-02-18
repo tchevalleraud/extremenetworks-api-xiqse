@@ -18,8 +18,7 @@
         }
 
         public function getNBIAdministrationServerInfo(){
-            $rep = $this->getServiceNbiQuery("query { administration { serverInfo { upTime version } } }");
-            return $rep;
+            return $this->getServiceNbiQuery("query { administration { serverInfo { upTime version } } }");
         }
 
         public function getServiceNbiQuery($query = ""){
@@ -55,7 +54,7 @@
             try {
                 return $this->client->request($method, $this->config->getUrl().$uri, $params);
             } catch (\GuzzleException $exception){
-                throw new \Exception($exception->getMessage());
+                throw new \GuzzleException($exception->getMessage());
             }
         }
 
