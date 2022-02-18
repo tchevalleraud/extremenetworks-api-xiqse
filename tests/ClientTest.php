@@ -26,7 +26,7 @@
 
         public function testClient_ServerInfo_ConnectionRefused(){
             $this->expectException("Exception");
-            $this->expectExceptionMessageMatches("/Connection refused for URI/");
+            $this->expectExceptionMessageMatches("/(Connection refused for URI|Failed to connect)/");
 
             $client = new \Tchevalleraud\ExtremeNetworks\XIQSE\Client($this->getFailedConfig1());
             $client->getNBIAdministrationServerInfo();
