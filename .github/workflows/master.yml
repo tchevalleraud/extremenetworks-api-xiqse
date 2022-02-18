@@ -6,17 +6,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
-      - name: Execute tests
-        run: XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml.dist
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/php@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Install dependencies with docker
+        run: |
+          docker run --rm --name tchevalleraud_extremenetworks-api-xiqse --user $(id -u):$(id -g) -v "$PWD":/app composer composer install --prefer-dist --no-progress
+          sleep 10
+      - name: Execute tests with docker
+        run: |
+          docker run --rm --name tchevalleraud_extremenetworks-api-xiqse --user $(id -u):$(id -g) -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e XDEBUG_MODE=coverage mileschou/xdebug:8.1 vendor/bin/phpunit --configuration phpunit.xml.dist
+          sleep 10
       - name: Upload tests results
         uses: actions/upload-artifact@v2
         with:
@@ -24,6 +24,17 @@ jobs:
           path: |
             coverage.xml
             phpunit.xml
+  test-snyk:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/php@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
   test-codacy:
     needs: build
     runs-on: ubuntu-latest
@@ -59,23 +70,11 @@ jobs:
           name: phpunit
       - name: Fix coverage for SonarCloud
         run: |
-          sed -i 's/\/home\/runner\/work\/extremenetworks-api-xiqse\/extremenetworks-api-xiqse\//\/github\/workspace\//g' coverage.xml
-          sed -i 's/\/home\/runner\/work\/extremenetworks-api-xiqse\/extremenetworks-api-xiqse\//\/github\/workspace\//g' phpunit.xml
+          sed -i 's/\/home\/runner\/work\/test-package\/test-package\//\/github\/workspace\//g' coverage.xml
+          sed -i 's/\/home\/runner\/work\/test-package\/test-package\//\/github\/workspace\//g' phpunit.xml
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  tag:
-    needs: [test-codacy, test-coveralls, test-sonarcloud]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: '0'
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.36.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
