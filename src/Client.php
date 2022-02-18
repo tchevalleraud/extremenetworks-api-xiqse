@@ -23,18 +23,14 @@
         }
 
         public function getServiceNbiQuery($query = ""){
-            try {
-                $res = $this->getRequest("/connect/rest/services/nbi/query", "POST", [
-                    "body"      => $query,
-                    "headers"   => [
-                        "Content-Type"  => "application/json"
-                    ]
-                ]);
+            $res = $this->getRequest("/connect/rest/services/nbi/query", "POST", [
+                "body"      => $query,
+                "headers"   => [
+                    "Content-Type"  => "application/json"
+                ]
+            ]);
 
-                return json_decode($res->getBody()->getContents());
-            } catch (\Exception $e){
-                throw new \Exception($e->getMessage());
-            }
+            return json_decode($res->getBody()->getContents());
         }
 
         public function getToken(){
