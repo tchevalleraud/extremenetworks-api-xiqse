@@ -18,24 +18,19 @@
         }
 
         public function getNBIAdministrationServerInfo(){
-            $data = [];
             $rep = $this->getServiceNbiQuery("query { administration { serverInfo { upTime version } } }");
             return $rep;
         }
 
         public function getServiceNbiQuery($query = ""){
-            try {
-                $res = $this->getRequest("/connect/rest/services/nbi/query", "POST", [
-                    "body"      => $query,
-                    "headers"   => [
-                        "Content-Type"  => "application/json"
-                    ]
-                ]);
-                $response = json_decode($res->getBody()->getContents());
-                return $response;
-            } catch (\Exception $e){
-                throw new \Exception($e->getMessage());
-            }
+            $res = $this->getRequest("/connect/rest/services/nbi/query", "POST", [
+                "body"      => $query,
+                "headers"   => [
+                    "Content-Type"  => "application/json"
+                ]
+            ]);
+
+            return json_decode($res->getBody()->getContents());
         }
 
         public function getToken(){
@@ -43,15 +38,11 @@
         }
 
         private function initToken(){
-            try {
-                $res = $this->getRequest("/oauth/token/access-token?grant_type=client_credentials", "POSt", [
-                    "auth"  => [$this->config->getClientId(), $this->config->getClientSecret()]
-                ]);
-                $response = json_decode($res->getBody()->getContents());
-                $this->token = $response->access_token;
-            } catch (\Exception $e){
-                throw new \Exception($e->getMessage());
-            }
+            $res = $this->getRequest("/oauth/token/access-token?grant_type=client_credentials", "POSt", [
+                "auth"  => [$this->config->getClientId(), $this->config->getClientSecret()]
+            ]);
+            $response = json_decode($res->getBody()->getContents());
+            $this->token = $response->access_token;
         }
 
         private function getRequest($uri, $method = "GET", $params = []){
@@ -63,8 +54,8 @@
 
             try {
                 return $this->client->request($method, $this->config->getUrl().$uri, $params);
-            } catch (\Exception $e){
-                throw new \Exception($e->getMessage());
+            } catch (\GuzzleException $exception){
+                throw new \Exception($exception->getMessage());
             }
         }
 
