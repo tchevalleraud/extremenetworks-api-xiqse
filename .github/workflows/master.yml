@@ -70,8 +70,8 @@ jobs:
           name: phpunit
       - name: Fix coverage for SonarCloud
         run: |
-          sed -i 's/\/home\/runner\/work\/extremenetworks-api-xiqse\/extremenetworks-api-xiqse\//\/usr/src/myapp\//g' coverage.xml
-          sed -i 's/\/home\/runner\/work\/extremenetworks-api-xiqse\/extremenetworks-api-xiqse\//\/usr/src/myapp\//g' phpunit.xml
+          sed -i 's/\/usr\/src\/myapp\//\/github\/workspace\//g' coverage.xml
+          sed -i 's/\/usr\/src\/myapp\//\/github\/workspace\//g' phpunit.xml
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
