@@ -12,7 +12,6 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/960df8cbb5ef4ab69a05e2635891168e)](https://www.codacy.com/gh/tchevalleraud/extremenetworks-api-xiqse/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tchevalleraud/extremenetworks-api-xiqse&amp;utm_campaign=Badge_Grade)
 [![Snyk](https://snyk-widget.herokuapp.com/badge/composer/snyk/tchevalleraud/extremenetworks-api-xiqse/badge.svg)](https://app.snyk.io/org/tchevalleraud/project/)
-[![codecov](https://codecov.io/gh/tchevalleraud/extremenetworks-api-xiqse/branch/master/graph/badge.svg?token=LMV2YDDHU6)](https://codecov.io/gh/tchevalleraud/extremenetworks-api-xiqse)
 
 ---
 
