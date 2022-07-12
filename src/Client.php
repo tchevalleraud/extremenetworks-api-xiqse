@@ -17,8 +17,35 @@
             $this->initToken();
         }
 
+        public function NBIAccessControlAddMACToEndSystemGroup($group, $value){
+            return $this->getServiceNbiMutation('mutation { accessControl { addMACToEndSystemGroup(input: { group: "'. $group .'", value: "'. $value .'" }) { status } } }');
+        }
+
+        public function NBIAccessControlCreateGroup($name){
+            return $this->getServiceNbiMutation('mutation { accessControl { createGroup(input: { name: "'. $name .'" }) { status } } }');
+        }
+
+        public function NBIAccessControlDeleteGroup($name){
+            return $this->getServiceNbiMutation('mutation { accessControl { deleteGroup(input: { name: "'. $name .'" }) { status } } }');
+        }
+
+        public function NBIAccessControlRemoveMACToEndSystemGroup($group, $value){
+            return $this->getServiceNbiMutation('mutation { accessControl { removeMACFromEndSystemGroup(input: { group: "'. $group .'", value: "'. $value .'" }) { status } } }');
+        }
+
         public function getNBIAdministrationServerInfo(){
             return $this->getServiceNbiQuery("query { administration { serverInfo { upTime version } } }");
+        }
+
+        public function getServiceNbiMutation($query = ""){
+            $res = $this->getRequest("/connect/rest/services/nbi/mutation", "POST", [
+                "body"      => $query,
+                "headers"   => [
+                    "Content-Type"  => "application/json"
+                ]
+            ]);
+
+            return json_decode($res->getBody()->getContents());
         }
 
         public function getServiceNbiQuery($query = ""){
