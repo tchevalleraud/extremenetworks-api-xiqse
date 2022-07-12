@@ -21,8 +21,12 @@
             return $this->getServiceNbiMutation('mutation { accessControl { addMACToEndSystemGroup(input: { group: "'. $group .'", value: "'. $value .'" }) { status } } }');
         }
 
-        public function NBIAccessControlCreateGroup($name){
-            return $this->getServiceNbiMutation('mutation { accessControl { createGroup(input: { name: "'. $name .'" }) { status } } }');
+        public function NBIAccessControlCreateGroup($name, $type = "MAC"){
+            $data = $this->getServiceNbiMutation('mutation { accessControl { createGroup(input: { name: "'. $name .'", type: '. $type .' }) { errorCode message status } } }');
+            if($data->accessControl->createGroup->errorCode !== 0){
+                throw new \Exception($data->accessControl->createGroup->message);
+            }
+            return $data;
         }
 
         public function NBIAccessControlDeleteGroup($name){
