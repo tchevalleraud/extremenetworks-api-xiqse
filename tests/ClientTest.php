@@ -2,7 +2,7 @@
     class ClientTest extends \PHPUnit\Framework\TestCase {
 
         private function getConfig(){
-            return new \Tchevalleraud\ExtremeNetworks\XIQSE\Config("192.168.1.200", "bhkemlwVvj", "53e55769-50c8-483d-9665-40e497dc03fc");
+            return new \Tchevalleraud\ExtremeNetworks\XIQSE\Config("192.168.1.131", "jy9g3TXfyE", "2885ca56-a154-4643-ad60-d7d0ca428c77");
         }
 
         private function getFailedConfig1(){
@@ -10,7 +10,7 @@
         }
 
         private function getFailedConfig2(){
-            return new \Tchevalleraud\ExtremeNetworks\XIQSE\Config("192.168.1.200", "", "");
+            return new \Tchevalleraud\ExtremeNetworks\XIQSE\Config("192.168.1.131", "", "");
         }
 
         public function testClient_instanceOf(){
